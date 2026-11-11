@@ -1,0 +1,24 @@
+[Unit]
+Description=CookieSyncSvr - Chrome Extension Cookie Sync Web Service
+After=network-online.target postgresql.service mosquitto.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=cookiesync
+Group=cookiesync
+EnvironmentFile=-/etc/cookiesyncsvr/config.env
+WorkingDirectory=/var/lib/cookiesyncsvr
+ExecStart=/usr/bin/cookiesyncsvr
+Restart=on-failure
+RestartSec=5
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/cookiesyncsvr
+
+[Install]
+WantedBy=multi-user.target

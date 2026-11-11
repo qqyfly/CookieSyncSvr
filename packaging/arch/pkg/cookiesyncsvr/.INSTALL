@@ -1,0 +1,23 @@
+post_install() {
+  if ! getent group cookiesync >/dev/null; then
+    groupadd --system cookiesync
+  fi
+  if ! getent passwd cookiesync >/dev/null; then
+    useradd --system --gid cookiesync --home-dir /var/lib/cookiesyncsvr --shell /usr/bin/nologin cookiesync
+  fi
+  chown -R cookiesync:cookiesync /var/lib/cookiesyncsvr
+  chown root:cookiesync /etc/cookiesyncsvr/config.env
+  chmod 0640 /etc/cookiesyncsvr/config.env
+  systemctl daemon-reload >/dev/null 2>&1 || true
+  echo "==> CookieSyncSvr installed. Edit /etc/cookiesyncsvr/config.env then run:"
+  echo "    sudo systemctl enable --now cookiesyncsvr"
+}
+
+post_upgrade() {
+  post_install
+}
+
+pre_remove() {
+  systemctl stop cookiesyncsvr >/dev/null 2>&1 || true
+  systemctl disable cookiesyncsvr >/dev/null 2>&1 || true
+}

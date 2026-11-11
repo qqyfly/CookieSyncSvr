@@ -1,0 +1,22 @@
+# Maintainer: qqyfly <qqyfly@users.noreply.github.com>
+pkgname=cookiesyncsvr
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Go web service to sync Chrome Extension cookies and serve them to Python clients"
+arch=('x86_64' 'aarch64')
+url="https://github.com/qqyfly/CookieSyncSvr"
+license=('MIT')
+depends=()
+options=('!debug' '!strip')
+backup=('etc/cookiesyncsvr/config.env')
+install=cookiesyncsvr.install
+
+package() {
+  cd "${startdir}/../.."
+
+  install -Dm755 "dist/cookiesyncsvr" "${pkgdir}/usr/bin/cookiesyncsvr"
+  install -Dm600 "packaging/config.env.example" "${pkgdir}/etc/cookiesyncsvr/config.env"
+  install -Dm644 "packaging/systemd/cookiesyncsvr.service" "${pkgdir}/usr/lib/systemd/system/cookiesyncsvr.service"
+  install -Dm750 -d "${pkgdir}/var/lib/cookiesyncsvr"
+  install -Dm644 "LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}
